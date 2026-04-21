@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anatomy of an Eruption — Whakaari Cross-section</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1a1613;
+    overflow: hidden;
+  }
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 18px 24px 16px;
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+  }
+  .headline {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #1a1613;
+  }
+  .sub {
+    font-size: 12px;
+    font-weight: 400;
+    color: #6a6660;
+    letter-spacing: 0.3px;
+    margin-top: 4px;
+  }
+  .brand {
+    text-align: right;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: #8a4a1a;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1.5;
+  }
+  .brand-italic {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.3px;
+    color: #1a1613;
+    text-transform: none;
+    margin-bottom: 2px;
+    display: block;
+  }
+  .stage-container {
+    display: flex;
+    gap: 18px;
+    flex: 1;
+    min-height: 0;
+  }
+  .diagram {
+    flex: 1;
+    background: linear-gradient(180deg, #f7fbff 0%, #ffffff 100%);
+    border-radius: 10px;
+    border: 1px solid #e6e2da;
+    padding: 14px;
+    position: relative;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .diagram svg {
+    width: 100%;
+    height: 100%;
+    flex: 1;
+    min-height: 0;
+    display: block;
+  }
+  .panel {
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .stage-btn {
+    background: #fafaf7;
+    border: 1.5px solid #e6e2da;
+    border-radius: 8px;
+    padding: 10px 12px;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: #3a352f;
+    transition: all 0.18s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .stage-btn:hover {
+    background: #ffffff;
+    border-color: #8A4A1A;
+    transform: translateX(2px);
+  }
+  .stage-btn.active {
+    background: #8A4A1A;
+    border-color: #8A4A1A;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(138,74,26,0.25);
+  }
+  .stage-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #8A4A1A;
+    font-weight: 800;
+    font-size: 11px;
+    flex-shrink: 0;
+    border: 1.5px solid #8A4A1A;
+  }
+  .stage-btn.active .stage-num {
+    background: #ffffff;
+    color: #8A4A1A;
+  }
+  .explain {
+    margin-top: 8px;
+    background: linear-gradient(180deg, #fff8f1 0%, #fef2e4 100%);
+    border: 1px solid #f2d9b8;
+    border-radius: 10px;
+    padding: 14px 16px;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 120px;
+  }
+  .explain h3 {
+    font-size: 13px;
+    font-weight: 800;
+    color: #8A4A1A;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .explain p {
+    font-size: 12.5px;
+    color: #2a2824;
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+  .explain p:last-child { margin-bottom: 0; }
+  .explain .fact {
+    font-size: 11px;
+    color: #8A4A1A;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+  .foot {
+    margin-top: 8px;
+    font-size: 10px;
+    color: #8a8680;
+    letter-spacing: 1.5px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  /* SVG element styling with smooth transitions */
+  .svg-el {
+    transition: opacity 0.5s ease, filter 0.5s ease;
+  }
+  .dim { opacity: 0.25; }
+  .highlight { filter: drop-shadow(0 0 10px rgba(255,120,40,0.7)); }
+  .label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    fill: #1a1613;
+    letter-spacing: 0.5px;
+    pointer-events: none;
+  }
+  .label-white {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    fill: #ffffff;
+    letter-spacing: 0.5px;
+    pointer-events: none;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  }
+  .label-small {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    fill: #3a352f;
+    letter-spacing: 0.3px;
+    pointer-events: none;
+  }
+  .arrow-line {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Plume animation for eruption stage */
+  @keyframes riseAndDrift {
+    0%   { transform: translateY(20px) scale(0.8); opacity: 0; }
+    20%  { opacity: 0.9; }
+    100% { transform: translateY(-30px) scale(1.15); opacity: 0.7; }
+  }
+  .plume-animate {
+    animation: riseAndDrift 3s ease-in-out infinite alternate;
+    transform-origin: 550px 240px;
+  }
+
+  /* Magma pulse */
+  @keyframes magmaPulse {
+    0%, 100% { filter: drop-shadow(0 0 6px rgba(255,107,53,0.6)); }
+    50%      { filter: drop-shadow(0 0 16px rgba(255,107,53,0.9)); }
+  }
+  .magma-pulse { animation: magmaPulse 2.5s ease-in-out infinite; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div>
+      <div class="headline">Anatomy of an Eruption</div>
+      <div class="sub">Click a stage below to walk through how Whakaari erupts</div>
+    </div>
+    <div class="brand">
+      <span class="brand-italic">beneath the smoke</span>
+      Aotearoa Volcanic<br>Awareness Centre
+    </div>
+  </div>
+
+  <div class="stage-container">
+    <div class="diagram">
+      <svg id="diag" viewBox="0 0 1400 700" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#e8f4fb"/>
+            <stop offset="100%" stop-color="#c9e3f2"/>
+          </linearGradient>
+          <linearGradient id="oceanGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#7ec5d6"/>
+            <stop offset="100%" stop-color="#4a9eb5"/>
+          </linearGradient>
+          <linearGradient id="crustGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#d4c29a"/>
+            <stop offset="100%" stop-color="#a68b5c"/>
+          </linearGradient>
+          <linearGradient id="mantleGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#c49060"/>
+            <stop offset="100%" stop-color="#7a4e2a"/>
+          </linearGradient>
+          <linearGradient id="pacPlate" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#8fb4d4"/>
+            <stop offset="100%" stop-color="#4d7a9f"/>
+          </linearGradient>
+          <linearGradient id="ausPlate" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#b8a074"/>
+            <stop offset="100%" stop-color="#7e6840"/>
+          </linearGradient>
+          <radialGradient id="magmaGrad" cx="50%" cy="50%" r="60%">
+            <stop offset="0%" stop-color="#ffeb3b"/>
+            <stop offset="30%" stop-color="#ff9800"/>
+            <stop offset="70%" stop-color="#e63946"/>
+            <stop offset="100%" stop-color="#8b0000"/>
+          </radialGradient>
+          <linearGradient id="conduitGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ffb347"/>
+            <stop offset="100%" stop-color="#c62828"/>
+          </linearGradient>
+          <linearGradient id="hydroGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#5dc9e8" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#2a8ab0" stop-opacity="0.8"/>
+          </linearGradient>
+          <linearGradient id="plumeGrad" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#8a8680" stop-opacity="0.95"/>
+            <stop offset="50%" stop-color="#c9c2b5" stop-opacity="0.85"/>
+            <stop offset="100%" stop-color="#efeae1" stop-opacity="0.2"/>
+          </linearGradient>
+          <radialGradient id="meltGlow" cx="50%" cy="50%" r="55%">
+            <stop offset="0%" stop-color="#ffb347" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#ff6b35" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+
+        <!-- Sky -->
+        <rect x="0" y="0" width="1400" height="240" fill="url(#skyGrad)"/>
+
+        <!-- Ocean -->
+        <g id="ocean" class="svg-el">
+          <rect x="0" y="240" width="1400" height="80" fill="url(#oceanGrad)"/>
+          <path d="M 0 250 Q 100 244 200 250 T 400 250 T 600 250 T 800 250 T 1000 250 T 1200 250 T 1400 250 L 1400 255 L 0 255 Z" fill="#ffffff" opacity="0.4"/>
+          <path d="M 0 275 Q 150 270 300 278 T 600 275 T 900 278 T 1200 274 T 1400 276 L 1400 282 L 0 282 Z" fill="#ffffff" opacity="0.2"/>
+        </g>
+
+        <!-- Upper Mantle base fill -->
+        <rect x="0" y="320" width="1400" height="380" fill="url(#mantleGrad)"/>
+
+        <!-- Australian Plate (overriding plate) -->
+        <g id="aus-plate" class="svg-el">
+          <path d="M 0 320
+                   L 1400 320
+                   L 1400 420
+                   L 1050 440
+                   L 900 490
+                   L 780 520
+                   L 650 530
+                   L 400 525
+                   L 0 520 Z"
+                fill="url(#ausPlate)" stroke="#5a4828" stroke-width="2"/>
+          <text x="200" y="400" class="label">AUSTRALIAN PLATE</text>
+          <text x="200" y="415" class="label-small">(overriding plate)</text>
+        </g>
+
+        <!-- Pacific Plate (subducting) -->
+        <g id="pac-plate" class="svg-el">
+          <path d="M 1400 340
+                   L 1400 440
+                   L 1100 470
+                   L 920 530
+                   L 780 590
+                   L 650 640
+                   L 550 680
+                   L 550 700
+                   L 1400 700 Z"
+                fill="url(#pacPlate)" stroke="#2e4f6b" stroke-width="2"/>
+          <text x="1170" y="395" class="label">PACIFIC PLATE</text>
+          <text x="1170" y="410" class="label-small">(subducting ~40 mm/year)</text>
+        </g>
+
+        <!-- Subduction arrow -->
+        <g id="subduction-arrow" class="svg-el" opacity="0">
+          <path class="arrow-line" d="M 1280 370 Q 1050 440 820 560" stroke="#c62828" stroke-width="5" fill="none" stroke-dasharray="10,6"/>
+          <polygon points="820,560 832,552 835,567" fill="#c62828"/>
+          <text x="1020" y="440" class="label" fill="#c62828">SUBDUCTION</text>
+        </g>
+
+        <!-- Melting zone glow -->
+        <g id="melt-zone" class="svg-el" opacity="0">
+          <ellipse cx="850" cy="560" rx="140" ry="55" fill="url(#meltGlow)"/>
+          <text x="790" y="640" class="label" fill="#c62828">MELTING ZONE</text>
+          <text x="790" y="655" class="label-small">water from plate triggers melting</text>
+        </g>
+
+        <!-- Water release particles (from plate to melting zone) -->
+        <g id="water-release" class="svg-el" opacity="0">
+          <circle cx="1000" cy="490" r="3" fill="#5dc9e8"/>
+          <circle cx="960" cy="505" r="2.5" fill="#5dc9e8"/>
+          <circle cx="920" cy="525" r="3" fill="#5dc9e8"/>
+          <circle cx="890" cy="545" r="2" fill="#5dc9e8"/>
+          <circle cx="960" cy="470" r="2" fill="#5dc9e8"/>
+          <circle cx="930" cy="495" r="2.5" fill="#5dc9e8"/>
+          <path class="arrow-line" d="M 1000 490 Q 930 530 860 560" stroke="#2a8ab0" stroke-width="2" fill="none" stroke-dasharray="3,3"/>
+          <text x="900" y="455" class="label-small" fill="#2a8ab0">H₂O release</text>
+        </g>
+
+        <!-- Magma Chamber -->
+        <g id="magma-chamber" class="svg-el">
+          <ellipse cx="530" cy="560" rx="110" ry="45" fill="url(#magmaGrad)"/>
+          <ellipse cx="530" cy="560" rx="95" ry="36" fill="#ffb347" opacity="0.5"/>
+          <text x="470" y="600" class="label-white">MAGMA CHAMBER</text>
+        </g>
+
+        <!-- Conduit -->
+        <g id="conduit" class="svg-el">
+          <path d="M 510 520
+                   L 540 520
+                   L 548 380
+                   L 556 290
+                   L 560 255
+                   L 548 255
+                   L 540 290
+                   L 532 380
+                   L 502 520 Z"
+                fill="url(#conduitGrad)" stroke="#8b0000" stroke-width="1"/>
+          <text x="480" y="400" class="label" fill="#c62828">CONDUIT</text>
+        </g>
+
+        <!-- Rising magma arrows -->
+        <g id="magma-rising" class="svg-el" opacity="0">
+          <path class="arrow-line" d="M 525 520 L 555 260" stroke="#ff4500" stroke-width="3" fill="none" stroke-dasharray="6,4"/>
+          <polygon points="555,260 548,270 562,270" fill="#ff4500"/>
+        </g>
+
+        <!-- Hydrothermal system -->
+        <g id="hydro" class="svg-el">
+          <ellipse cx="520" cy="360" rx="70" ry="20" fill="url(#hydroGrad)"/>
+          <ellipse cx="540" cy="400" rx="55" ry="14" fill="url(#hydroGrad)" opacity="0.7"/>
+          <circle cx="490" cy="355" r="2" fill="#5dc9e8"/>
+          <circle cx="550" cy="362" r="2.5" fill="#5dc9e8"/>
+          <circle cx="515" cy="395" r="2" fill="#5dc9e8"/>
+          <text x="590" y="360" class="label" fill="#2a8ab0">HYDROTHERMAL</text>
+          <text x="590" y="373" class="label-small" fill="#2a8ab0">superheated water &amp; gas</text>
+        </g>
+
+        <!-- Whakaari Island profile -->
+        <g id="island" class="svg-el">
+          <path d="M 350 320
+                   L 430 280
+                   L 500 255
+                   L 525 250
+                   L 545 252
+                   L 570 252
+                   L 595 250
+                   L 620 258
+                   L 680 285
+                   L 730 320 Z"
+                fill="#5b544a" stroke="#3a342d" stroke-width="2"/>
+          <!-- Crater dip -->
+          <path d="M 520 252 L 540 248 L 560 250 L 580 248 L 595 252
+                   L 585 262 L 570 268 L 550 270 L 535 266 L 522 260 Z"
+                fill="#2d2822"/>
+          <!-- Crater lake (acid lake) -->
+          <ellipse cx="555" cy="261" rx="22" ry="5" fill="#a8e6cf"/>
+          <text x="430" y="340" class="label">WHAKAARI / WHITE ISLAND</text>
+          <text x="590" y="245" class="label-small" fill="#2a8ab0">crater lake</text>
+        </g>
+
+        <!-- Pressure indicator -->
+        <g id="pressure" class="svg-el" opacity="0">
+          <circle cx="530" cy="560" r="130" fill="none" stroke="#c62828" stroke-width="2" stroke-dasharray="4,4"/>
+          <circle cx="530" cy="560" r="145" fill="none" stroke="#c62828" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.6"/>
+          <text x="370" y="700" class="label" fill="#c62828">GAS PRESSURE BUILDING</text>
+        </g>
+
+        <!-- Steam plume (normal) -->
+        <g id="steam" class="svg-el">
+          <ellipse cx="555" cy="225" rx="18" ry="10" fill="#ffffff" opacity="0.85"/>
+          <ellipse cx="550" cy="210" rx="14" ry="8" fill="#ffffff" opacity="0.7"/>
+          <ellipse cx="562" cy="200" rx="10" ry="6" fill="#ffffff" opacity="0.5"/>
+        </g>
+
+        <!-- Eruption plume (active) -->
+        <g id="plume" class="svg-el" opacity="0">
+          <g class="plume-animate">
+            <ellipse cx="555" cy="170" rx="70" ry="50" fill="url(#plumeGrad)"/>
+            <ellipse cx="540" cy="140" rx="55" ry="45" fill="url(#plumeGrad)"/>
+            <ellipse cx="575" cy="110" rx="65" ry="50" fill="url(#plumeGrad)"/>
+            <ellipse cx="545" cy="80" rx="80" ry="55" fill="url(#plumeGrad)"/>
+            <ellipse cx="600" cy="50" rx="95" ry="45" fill="url(#plumeGrad)"/>
+          </g>
+          <!-- Ballistic ash particles -->
+          <g fill="#3a342d">
+            <circle cx="480" cy="190" r="2"/>
+            <circle cx="620" cy="180" r="2.5"/>
+            <circle cx="440" cy="150" r="2"/>
+            <circle cx="680" cy="120" r="2.5"/>
+            <circle cx="420" cy="210" r="1.5"/>
+            <circle cx="670" cy="220" r="2"/>
+          </g>
+          <text x="460" y="40" class="label" fill="#c62828">ERUPTION COLUMN</text>
+        </g>
+
+        <!-- Depth scale on left -->
+        <g id="depth-scale" class="svg-el" opacity="0.7">
+          <line x1="60" y1="320" x2="60" y2="680" stroke="#8a8680" stroke-width="1"/>
+          <line x1="55" y1="320" x2="65" y2="320" stroke="#8a8680" stroke-width="1"/>
+          <text x="20" y="324" class="label-small" fill="#8a8680">0 km</text>
+          <line x1="55" y1="430" x2="65" y2="430" stroke="#8a8680" stroke-width="1"/>
+          <text x="15" y="434" class="label-small" fill="#8a8680">10 km</text>
+          <line x1="55" y1="540" x2="65" y2="540" stroke="#8a8680" stroke-width="1"/>
+          <text x="15" y="544" class="label-small" fill="#8a8680">20 km</text>
+          <line x1="55" y1="650" x2="65" y2="650" stroke="#8a8680" stroke-width="1"/>
+          <text x="15" y="654" class="label-small" fill="#8a8680">30 km</text>
+          <text x="20" y="705" class="label-small" fill="#8a8680" font-weight="700">DEPTH</text>
+        </g>
+
+        <!-- Scale: Bay of Plenty on left -->
+        <text x="100" y="340" class="label-small" fill="#5a4828">(BAY OF PLENTY)</text>
+        <text x="1240" y="340" class="label-small" fill="#2e4f6b">(KERMADEC TRENCH →)</text>
+
+      </svg>
+    </div>
+
+    <div class="panel">
+      <button class="stage-btn active" data-stage="0"><span class="stage-num">i</span>Overview</button>
+      <button class="stage-btn" data-stage="1"><span class="stage-num">1</span>Subduction</button>
+      <button class="stage-btn" data-stage="2"><span class="stage-num">2</span>Melting</button>
+      <button class="stage-btn" data-stage="3"><span class="stage-num">3</span>Magma Ascent</button>
+      <button class="stage-btn" data-stage="4"><span class="stage-num">4</span>Pressure Build-up</button>
+      <button class="stage-btn" data-stage="5"><span class="stage-num">5</span>Eruption</button>
+
+      <div class="explain">
+        <h3 id="stageTitle">Overview</h3>
+        <p id="stageText">Whakaari sits above the Kermadec subduction zone, where the Pacific Plate dives beneath the Australian Plate at around 40 mm per year. This cross-section shows how that plate motion ultimately builds the steam and ash eruptions the island is famous for.</p>
+        <p id="stageFact" class="fact">Click the numbered stages to explore each step</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">BENEATH THE SMOKE · AOTEAROA VOLCANIC AWARENESS CENTRE</div>
+</div>
+
+<script>
+const stages = {
+  0: {
+    title: "Overview",
+    text: "Whakaari sits above the Kermadec subduction zone, where the Pacific Plate dives beneath the Australian Plate at around 40 mm per year. This cross-section shows how that plate motion ultimately builds the steam and ash eruptions the island is famous for.",
+    fact: "Click the numbered stages to explore each step",
+    highlight: [],
+    dim: []
+  },
+  1: {
+    title: "Stage 1 · Subduction",
+    text: "The Pacific Plate, denser than the Australian Plate, is pushed downward into the mantle along the Kermadec Trench east of New Zealand. As it sinks, friction and pressure heat it. This slow, steady motion is the engine that drives every volcano in the Taupō Volcanic Zone — including Whakaari.",
+    fact: "~40 mm per year · ~200 km deep over millions of years",
+    highlight: ["pac-plate", "subduction-arrow"],
+    dim: ["island", "conduit", "magma-chamber", "hydro", "steam", "plume"]
+  },
+  2: {
+    title: "Stage 2 · Melting",
+    text: "As the Pacific Plate descends, water trapped in its rocks is released into the overlying mantle. Water lowers the melting point of the surrounding rock, creating pockets of magma — a process called flux melting. This molten rock is lighter than the solid rock around it, so it begins to rise.",
+    fact: "Melting starts at ~100 km depth beneath the Taupō Volcanic Zone",
+    highlight: ["melt-zone", "water-release"],
+    dim: ["island", "conduit", "steam", "plume", "pressure"]
+  },
+  3: {
+    title: "Stage 3 · Magma Ascent",
+    text: "Buoyant magma rises through fractures in the Australian Plate, collecting in a chamber a few kilometres below Whakaari. Over time it feeds upward through a narrow conduit toward the surface. Seismographs often detect tiny earthquakes as the magma cracks its way through the crust.",
+    fact: "Magma chamber beneath Whakaari lies ~2–7 km below the crater",
+    highlight: ["magma-chamber", "conduit", "magma-rising"],
+    dim: ["pac-plate", "melt-zone", "water-release", "steam", "plume", "pressure"]
+  },
+  4: {
+    title: "Stage 4 · Pressure Build-up",
+    text: "Near the surface, rising magma meets groundwater and the island's hot, acid crater lake. Water flash-heats into steam, and gases trapped in the magma try to escape but are sealed by cooled rock. Pressure climbs rapidly. At Whakaari, this hydrothermal system is the main trigger for sudden steam-driven eruptions.",
+    fact: "The 2019 Whakaari eruption was a phreatic (steam-driven) event",
+    highlight: ["magma-chamber", "conduit", "hydro", "pressure"],
+    dim: ["pac-plate", "melt-zone", "water-release", "plume"]
+  },
+  5: {
+    title: "Stage 5 · Eruption",
+    text: "When pressure exceeds the strength of the rock plug, the system ruptures. Superheated steam, ash, rock fragments and volcanic gases blast upward in an eruption column. At Whakaari this happens with very little warning — the 2019 event gave only minutes of precursor signals before killing 22 people on the island.",
+    fact: "2019 Whakaari plume reached ~3.6 km · ballistics hit tourists within seconds",
+    highlight: ["plume", "island"],
+    dim: ["pac-plate", "melt-zone", "water-release", "depth-scale"]
+  }
+};
+
+const diag = document.getElementById("diag");
+const btns = document.querySelectorAll(".stage-btn");
+const titleEl = document.getElementById("stageTitle");
+const textEl = document.getElementById("stageText");
+const factEl = document.getElementById("stageFact");
+
+function applyStage(n) {
+  const s = stages[n];
+  const allIds = ["aus-plate","pac-plate","subduction-arrow","melt-zone","water-release","magma-chamber","conduit","magma-rising","hydro","island","pressure","steam","plume","depth-scale","ocean"];
+  allIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove("dim","highlight");
+    // reset opacity for things that start hidden
+    if (["subduction-arrow","melt-zone","water-release","magma-rising","pressure","plume"].includes(id)) {
+      el.style.opacity = 0;
+    } else {
+      el.style.opacity = 1;
+    }
+  });
+
+  s.highlight.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.opacity = 1;
+      el.classList.add("highlight");
+    }
+  });
+  s.dim.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add("dim");
+  });
+
+  // Special cases: always show the core geology at baseline for all stages
+  // (aus-plate and pac-plate stay visible unless dimmed)
+
+  titleEl.textContent = s.title;
+  textEl.textContent = s.text;
+  factEl.textContent = s.fact;
+
+  btns.forEach(b => b.classList.remove("active"));
+  const activeBtn = document.querySelector(`.stage-btn[data-stage="${n}"]`);
+  if (activeBtn) activeBtn.classList.add("active");
+}
+
+btns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const n = btn.getAttribute("data-stage");
+    applyStage(n);
+  });
+});
+
+// Initialise
+applyStage(0);
+</script>
+</body>
+</html>
